@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品详情 - 迹微兽医设备 (FortisMed)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9', // Sky 500
+                        secondary: '#0f172a', // Slate 900
+                        accent: '#f59e0b', // Amber 500
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Thumbnail Active State */
+        .thumbnail.active {
+            border-color: #0ea5e9;
+            opacity: 1;
+        }
+        /* Tab Active State */
+        .tab-btn.active {
+            color: #0ea5e9;
+            border-bottom-width: 2px;
+            border-color: #0ea5e9;
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Spec Table */
+        .spec-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-700 antialiased flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="fixed w-full bg-white/95 backdrop-blur-sm shadow-sm z-50 transition-all duration-300" id="header">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white text-xl font-bold">
+                        <i class="fa-solid fa-staff-snake"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-secondary tracking-tight">Fortis<span class="text-primary">Med</span></span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-slate-600 hover:text-primary font-medium transition-colors">首页</a>
+                    <a href="products.html" class="text-primary font-bold transition-colors">产品中心</a>
+                    <a href="index.html#about" class="text-slate-600 hover:text-primary font-medium transition-colors">关于我们</a>
+                    <a href="index.html#contact" class="text-slate-600 hover:text-primary font-medium transition-colors">联系我们</a>
+                </nav>
+
+                <!-- CTA Button -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="index.html#contact" class="bg-primary hover:bg-sky-600 text-white px-5 py-2.5 rounded-full font-medium transition-colors shadow-md transform hover:-translate-y-0.5 duration-200">
+                        获取报价
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-primary focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0 top-20 shadow-lg">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="index.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-primary">首页</a>
+                <a href="products.html" class="block px-3 py-2 rounded-md text-base font-medium text-primary bg-sky-50">产品中心</a>
+                <a href="index.html#about" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-primary">关于我们</a>
+                <a href="index.html#contact" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-primary">联系我们</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16 flex-grow">
+        
+        <!-- Breadcrumb & Back Button -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <nav class="flex text-sm text-slate-500 space-x-2">
+                <a href="index.html" class="hover:text-primary transition-colors">首页</a>
+                <span>/</span>
+                <a href="products.html" class="hover:text-primary transition-colors">产品中心</a>
+                <span>/</span>
+                <span class="text-slate-900 font-medium" id="breadcrumb-product-name">产品详情</span>
+            </nav>
+            <a href="products.html" class="inline-flex items-center text-sm font-medium text-slate-600 hover:text-primary transition-colors border border-slate-200 px-4 py-2 rounded-lg hover:border-primary bg-white">
+                <i class="fa-solid fa-arrow-left mr-2"></i> 返回产品列表
+            </a>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="py-20 text-center text-slate-500">
+            <i class="fa-solid fa-spinner fa-spin text-4xl text-primary mb-4"></i>
+            <p>正在加载产品信息...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="hidden py-20 text-center">
+            <i class="fa-regular fa-circle-xmark text-5xl text-red-400 mb-4"></i>
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">未找到该产品</h2>
+            <p class="text-slate-500 mb-6">您查找的产品可能已被移除或链接不正确。</p>
+            <a href="products.html" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-sky-600 transition-colors">返回产品中心</a>
+        </div>
+
+        <!-- Product Content Wrapper -->
+        <div id="product-content" class="hidden">
+            <!-- Top Section: Image & Basic Info -->
+            <div class="bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-slate-100 mb-10">
+                <div class="grid md:grid-cols-2 gap-10 lg:gap-16">
+                    
+                    <!-- Left: Product Images -->
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 rounded-xl p-8 flex items-center justify-center h-80 md:h-96 border border-slate-100">
+                            <img id="main-image" src="" alt="产品主图" class="max-h-full max-w-full object-contain mix-blend-multiply transition-opacity duration-300">
+                        </div>
+                        <!-- Thumbnails -->
+                        <div class="flex gap-4 overflow-x-auto pb-2" id="thumbnail-container">
+                            <!-- Thumbnails injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Right: Product Info -->
+                    <div class="flex flex-col justify-center">
+                        <div class="inline-block px-3 py-1 rounded-full bg-sky-50 text-primary text-xs font-bold uppercase tracking-wider mb-4 w-max border border-sky-100" id="product-category">
+                            产品分类
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-2" id="product-name">产品名称</h1>
+                        <p class="text-lg text-slate-500 mb-6 font-medium">型号: <span id="product-model">---</span></p>
+                        
+                        <p class="text-slate-600 leading-relaxed mb-8" id="product-desc">
+                            产品简介加载中...
+                        </p>
+
+                        <div class="mb-8">
+                            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">核心卖点</h3>
+                            <ul class="grid sm:grid-cols-2 gap-3" id="product-features">
+                                <!-- Features injected by JS -->
+                            </ul>
+                        </div>
+
+                        <div class="mt-auto pt-6 border-t border-slate-100 flex flex-col sm:flex-row gap-4">
+                            <a href="index.html#contact" class="flex-1 bg-primary hover:bg-sky-600 text-white text-center py-3.5 rounded-xl font-bold transition-all shadow-md transform hover:-translate-y-0.5">
+                                <i class="fa-regular fa-envelope mr-2"></i> 立即咨询报价
+                            </a>
+                            <button class="flex-1 bg-white border-2 border-slate-200 hover:border-primary text-slate-700 hover:text-primary text-center py-3.5 rounded-xl font-bold transition-all">
+                                <i class="fa-solid fa-download mr-2"></i> 下载产品手册
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Tabs -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <!-- Tab Headers -->
+                <div class="flex border-b border-slate-200 overflow-x-auto px-6">
+                    <button class="tab-btn active px-6 py-4 text-slate-600 hover:text-primary font-medium whitespace-nowrap transition-colors" data-target="tab-specs">技术参数</button>
+                    <button class="tab-btn px-6 py-4 text-slate-600 hover:text-primary font-medium whitespace-nowrap transition-colors" data-target="tab-advantages">产品优势</button>
+                    <button class="tab-btn px-6 py-4 text-slate-600 hover:text-primary font-medium whitespace-nowrap transition-colors" data-target="tab-applications">应用领域</button>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="p-6 md:p-10">
+                    <!-- Specs Tab -->
+                    <div id="tab-specs" class="tab-content active">
+                        <h3 class="text-xl font-bold text-slate-900 mb-6">技术规格表</h3>
+                        <div class="overflow-x-auto rounded-lg border border-slate-200">
+                            <table class="w-full text-left border-collapse spec-table">
+                                <tbody id="product-specs-table">
+                                    <!-- Specs injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Advantages Tab -->
+                    <div id="tab-advantages" class="tab-content">
+                        <h3 class="text-xl font-bold text-slate-900 mb-6">产品核心优势</h3>
+                        <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed" id="product-advantages">
+                            <!-- Advantages injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Applications Tab -->
+                    <div id="tab-applications" class="tab-content">
+                        <h3 class="text-xl font-bold text-slate-900 mb-6">适用场景与领域</h3>
+                        <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed" id="product-applications">
+                            <!-- Applications injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8 border-t border-slate-800 mt-auto">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-500 text-sm">© 2024 迹微兽医设备 (FortisMed). All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mock Database & Interactive Logic -->
+    <script>
+        // 1. Mock Product Database (Based on the PDF provided)
+        const productDatabase = {
+            '101': {
+                name: 'FortisMed 90BT 便携式X光机',
+                model: '90BT',
+                category: '影像产品系列',
+                images: [
+                    './images/便携X光机-FortisMed PG2.png',
+                    './images/便携X光机-FortisMed PG3.png'
+                ],
+                description: '极致轻便，专为兽医设计。内置可充电电池，蓝牙无线控制，配备高频逆变器，提供稳定、高质量的X射线输出。',
+                features: ['内置可充电电池', '紧凑优质结构设计', '友好用户界面', '蓝牙无线控制'],
+                specs: [
+                    { label: '高压发生器机头类型', value: '高频逆变器' },
+                    { label: '最高输出功率', value: '1.35kW (15mA@90kV) / 1.6kW (16mA@100kV)' },
+                    { label: 'Kv范围', value: '40-90kV / 40-100kV' },
+                    { label: 'mA范围', value: '12-20mA / 15-25mA' },
+                    { label: '球管焦点尺寸', value: '1.2*1.2mm' },
+                    { label: '净重', value: '8.5kg / 11.4kg' }
+                ],
+                advantages: `
+                    <p><strong>高效稳定：</strong> 采用最新非晶硅传感器技术和高频逆变器，大幅降低辐射剂量的同时保证成像质量。</p>
+                    <p><strong>极致便携：</strong> 轻量化机身设计，最轻仅重8.5kg，非常适合户外出诊或在不同诊室间移动。</p>
+                    <p><strong>强劲续航：</strong> 内置大容量电池组（2,600 mAh x 14），满电状态下可支持数百次曝光，告别电源线束缚。</p>
+                `,
+                applications: `
+                    <p>主要应用于：</p>
+                    <ul>
+                        <li>马匹及大型动物的四肢、关节及躯干影像检查。</li>
+                        <li>伴侣动物（犬、猫等）的骨科及内科常规X光拍片。</li>
+                        <li>动物园、野生动物救助站的户外急救医疗。</li>
+                    </ul>
+                `
+            },
+            '102': {
+                name: 'FortisMed GCK-P1 电子胃肠镜',
+                model: 'GCK-P1',
+                category: '内窥镜系列',
+                images: [
+                    './images/便携胃肠镜-FortisMed GCK-P1.png',
+                    './images/便携胃肠镜-FortisMed GCK-P2.png',
+                    './images/便携胃肠镜-FortisMed GCK-P3.png'
+                ],
+                description: '高清台式/一体式内窥镜，专为伴侣动物及马用设计。高清CMOS成像，大钳道设计，满足活检与异物取出需求。',
+                features: ['百万像素CMOS', '四向大角度弯曲', '2.8mm大器械通道', 'LED冷光源'],
+                specs: [
+                    { label: '成像传感器', value: '高分辨率CMOS' },
+                    { label: '视场角', value: '120°' },
+                    { label: '前端外径', value: '8.5mm' },
+                    { label: '器械通道内径', value: '2.8mm' },
+                    { label: '工作长度', value: '1500mm' }
+                ],
+                advantages: `
+                    <p><strong>卓越视野：</strong> 百万像素级图像传感器配合广角镜头，色彩还原真实，黏膜微小病变清晰可见。</p>
+                    <p><strong>操作灵活：</strong> 人体工学手柄设计，支持上下左右四向大角度弯曲，轻松到达盲区。</p>
+                    <p><strong>功能全面：</strong> 宽大的2.8mm钳道，支持绝大多数活检钳、异物钳和圈套器，提升手术效率。</p>
+                `,
+                applications: `
+                    <p>适用于猫、狗等伴侣动物以及中小型动物的消化道（食管、胃、十二指肠、结肠）检查、异物取出、息肉切除等微创诊疗。</p>
+                `
+            },
+            '103': {
+                name: 'Pro-Dental V5 专业兽用电动磨牙器',
+                model: 'V5-Pro',
+                category: '进口产品系列',
+                images: [
+                    './images/电动磨牙器.png'
+                ],
+                description: '进口品质，强劲动力，静音设计。专为马匹牙齿修整和伴侣动物口腔护理设计。',
+                features: ['0-35000转无级调速', '高亮LED照明', '低震动静音马达', '多种专业金刚石磨头'],
+                specs: [
+                    { label: '转速范围', value: '0 - 35,000 RPM (无级调速)' },
+                    { label: '最大扭矩', value: '3.5 N.cm' },
+                    { label: '控制方式', value: '脚踏板 / 手动双控' },
+                    { label: '主机重量', value: '1.2kg' }
+                ],
+                advantages: `
+                    <p><strong>平稳安静：</strong> 采用进口无刷电机，高速运转下依然保持低噪音和低震动，大幅减少动物在治疗过程中的应激反应。</p>
+                    <p><strong>精准控制：</strong> 支持脚踏无级变速，让医生双手专注操作；机头自带LED环形光，照亮口腔深处盲区。</p>
+                `,
+                applications: `
+                    <p>广泛应用于兽医诊所的牙科清洁、抛光、牙结石去除，以及马匹牙齿的日常打磨与修整（配合开口器使用）。</p>
+                `
+            }
+        };
+
+        // 2. Main Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu Toggle
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            if(btn && menu) {
+                btn.addEventListener('click', () => {
+                    menu.classList.toggle('hidden');
+                    const icon = btn.querySelector('i');
+                    if (menu.classList.contains('hidden')) {
+                        icon.classList.remove('fa-xmark');
+                        icon.classList.add('fa-bars');
+                    } else {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-xmark');
+                    }
+                });
+            }
+
+            // Tabs Logic
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active from all
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active to clicked
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.target).classList.add('active');
+                });
+            });
+
+            // Load Data Logic
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            const loadingState = document.getElementById('loading-state');
+            const errorState = document.getElementById('error-state');
+            const contentState = document.getElementById('product-content');
+
+            // Simulate Network Request Delay (Optional, for realism)
+            setTimeout(() => {
+                loadingState.classList.add('hidden');
+
+                if (productId && productDatabase[productId]) {
+                    renderProduct(productDatabase[productId]);
+                    contentState.classList.remove('hidden');
+                } else {
+                    errorState.classList.remove('hidden');
+                }
+            }, 400); // 400ms delay
+        });
+
+        // 3. Render DOM Function
+        function renderProduct(data) {
+            // Basic Text
+            document.title = `${data.name} - 迹微兽医设备 (FortisMed)`;
+            document.getElementById('breadcrumb-product-name').textContent = data.name;
+            document.getElementById('product-name').textContent = data.name;
+            document.getElementById('product-model').textContent = data.model;
+            document.getElementById('product-category').textContent = data.category;
+            document.getElementById('product-desc').textContent = data.description;
+
+            // Features (Bullets)
+            const featuresContainer = document.getElementById('product-features');
+            featuresContainer.innerHTML = '';
+            data.features.forEach(feat => {
+                featuresContainer.innerHTML += `
+                    <li class="flex items-center text-slate-700 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100">
+                        <i class="fa-solid fa-check text-green-500 mr-3"></i>
+                        <span class="text-sm font-medium">${feat}</span>
+                    </li>
+                `;
+            });
+
+            // Images (Gallery)
+            const mainImg = document.getElementById('main-image');
+            const thumbContainer = document.getElementById('thumbnail-container');
+            
+            if(data.images && data.images.length > 0) {
+                mainImg.src = data.images[0];
+                thumbContainer.innerHTML = '';
+                
+                data.images.forEach((imgSrc, index) => {
+                    const thumb = document.createElement('div');
+                    thumb.className = `thumbnail w-20 h-20 flex-shrink-0 rounded-lg border-2 cursor-pointer p-1 transition-all ${index === 0 ? 'active' : 'border-transparent opacity-60 hover:opacity-100'}`;
+                    thumb.innerHTML = `<img src="${imgSrc}" class="w-full h-full object-cover rounded-md bg-gray-50">`;
+                    
+                    thumb.addEventListener('click', () => {
+                        // Change main image with slight fade effect
+                        mainImg.style.opacity = '0.5';
+                        setTimeout(() => {
+                            mainImg.src = imgSrc;
+                            mainImg.style.opacity = '1';
+                        }, 150);
+
+                        // Update active state
+                        document.querySelectorAll('.thumbnail').forEach(t => {
+                            t.classList.remove('active');
+                            t.classList.add('border-transparent', 'opacity-60');
+                        });
+                        thumb.classList.add('active');
+                        thumb.classList.remove('border-transparent', 'opacity-60');
+                    });
+                    
+                    thumbContainer.appendChild(thumb);
+                });
+            }
+
+            // Specs Table
+            const specsTable = document.getElementById('product-specs-table');
+            specsTable.innerHTML = '';
+            data.specs.forEach(spec => {
+                specsTable.innerHTML += `
+                    <tr class="border-b border-slate-200 last:border-0">
+                        <th class="py-4 px-6 text-slate-900 font-medium w-1/3 bg-slate-50 border-r border-slate-200">${spec.label}</th>
+                        <td class="py-4 px-6 text-slate-600">${spec.value}</td>
+                    </tr>
+                `;
+            });
+
+            // HTML Content Tabs
+            document.getElementById('product-advantages').innerHTML = data.advantages;
+            document.getElementById('product-applications').innerHTML = data.applications;
+        }
+    </script>
+</body>
+</html>
